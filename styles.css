@@ -225,6 +225,27 @@ button.secondary:active {
   margin: 4px 0;
 }
 
+.affiliate-link {
+  display: inline-block;
+  padding: 2px 0;
+  color: #0a4fd1;
+  font-weight: 600;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+
+.affiliate-link:focus {
+  outline: 3px solid rgba(10, 79, 209, 0.2);
+  outline-offset: 2px;
+}
+
+.affiliate-disclosure {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.35;
+}
+
 @media (max-width: 380px) {
   .container {
     padding: max(10px, env(safe-area-inset-top)) 10px max(14px, env(safe-area-inset-bottom));
