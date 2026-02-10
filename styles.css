@@ -6,14 +6,21 @@
   --border: #d6deea;
   --primary: #0b5fff;
   --primary-hover: #084fd6;
+  --primary-active: #063fa8;
   --secondary-bg: #eef2f8;
   --warning: #8a2d00;
+  --danger: #b42318;
+  --danger-bg: #fff1f1;
   --note: #2d3a4d;
   --shadow: 0 10px 24px rgba(14, 30, 62, 0.08);
 }
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -26,9 +33,9 @@ body {
 .container {
   max-width: 760px;
   margin: 0 auto;
-  padding: 20px;
+  padding: max(14px, env(safe-area-inset-top)) 14px max(18px, env(safe-area-inset-bottom));
   display: grid;
-  gap: 16px;
+  gap: 12px;
 }
 
 .card {
@@ -36,7 +43,7 @@ body {
   border: 1px solid var(--border);
   border-radius: 14px;
   box-shadow: var(--shadow);
-  padding: 18px;
+  padding: 14px;
 }
 
 .card.small {
@@ -46,15 +53,24 @@ body {
 h1,
 h2 {
   margin: 0 0 8px;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: clamp(1.3rem, 2.2vw + 0.9rem, 1.75rem);
+}
+
+h2 {
+  font-size: clamp(1.05rem, 1.2vw + 0.85rem, 1.3rem);
 }
 
 .subtitle {
-  margin: 0 0 18px;
+  margin: 0 0 16px;
   color: var(--muted);
 }
 
 .field {
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 label {
@@ -67,10 +83,17 @@ input,
 select,
 button {
   width: 100%;
+  min-height: 46px;
   border-radius: 10px;
   border: 1px solid var(--border);
-  padding: 10px 12px;
+  padding: 11px 12px;
   font: inherit;
+}
+
+input,
+select {
+  font-size: 16px;
+  background: #fff;
 }
 
 input:focus,
@@ -80,11 +103,35 @@ button:focus {
   outline-offset: 1px;
 }
 
+.input-error {
+  border-color: var(--danger);
+  background: var(--danger-bg);
+}
+
+.input-error:focus {
+  outline: 3px solid rgba(180, 35, 24, 0.22);
+}
+
 .hint,
 .example {
   margin: 6px 2px 0;
   color: var(--muted);
   font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.error {
+  margin: 6px 2px 0;
+  color: var(--danger);
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.error.summary {
+  padding: 8px 10px;
+  border: 1px solid #f0c2c0;
+  border-radius: 8px;
+  background: var(--danger-bg);
 }
 
 .actions {
@@ -99,10 +146,16 @@ button {
   color: white;
   font-weight: 600;
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 button:hover {
   background: var(--primary-hover);
+}
+
+button:active {
+  background: var(--primary-active);
+  transform: translateY(1px);
 }
 
 button.secondary {
@@ -115,22 +168,27 @@ button.secondary:hover {
   background: #e2e8f2;
 }
 
+button.secondary:active {
+  background: #d7e0ee;
+}
+
 .result-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 12px;
+  gap: 10px;
 }
 
 .result-label {
   margin: 0;
   color: var(--muted);
-  font-size: 0.92rem;
+  font-size: 0.9rem;
 }
 
 .result-value {
   margin: 3px 0 0;
-  font-size: 1.3rem;
+  font-size: clamp(1.12rem, 1.3vw + 0.95rem, 1.3rem);
   font-weight: 700;
+  overflow-wrap: anywhere;
 }
 
 .note {
@@ -139,6 +197,8 @@ button.secondary:hover {
   border-radius: 8px;
   background: #edf3ff;
   color: var(--note);
+  font-size: 0.92rem;
+  line-height: 1.35;
 }
 
 .note.warning {
@@ -150,12 +210,80 @@ button.secondary:hover {
   display: none;
 }
 
+.placeholder-section {
+  opacity: 0.75;
+  border-style: dashed;
+}
+
+.placeholder-list {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+}
+
+.placeholder-list li {
+  margin: 4px 0;
+}
+
+@media (max-width: 380px) {
+  .container {
+    padding: max(10px, env(safe-area-inset-top)) 10px max(14px, env(safe-area-inset-bottom));
+    gap: 10px;
+  }
+
+  .card {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  .subtitle {
+    margin-bottom: 12px;
+  }
+
+  .field {
+    margin-bottom: 10px;
+  }
+
+  .actions {
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .result-grid {
+    gap: 8px;
+  }
+}
+
 @media (min-width: 640px) {
+  .container {
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
   .actions {
     grid-template-columns: 1fr 1fr;
   }
 
   .result-grid {
     grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .container {
+    gap: 10px;
+  }
+
+  .card {
+    padding: 12px;
+  }
+
+  .actions {
+    grid-template-columns: 1fr 1fr;
   }
 }

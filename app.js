@@ -16,6 +16,11 @@
   var capNoteEl = document.getElementById("capNote");
   var tareNoteEl = document.getElementById("tareNote");
 
+  var formErrorEl = document.getElementById("formError");
+  var customCapacityErrorEl = document.getElementById("customCapacityError");
+  var tareWeightErrorEl = document.getElementById("tareWeightError");
+  var currentWeightErrorEl = document.getElementById("currentWeightError");
+
   function parseNum(value) {
     if (value === "" || value == null) {
       return NaN;
@@ -74,15 +79,90 @@
     tareNoteEl.classList.toggle("hidden", !showTareNote);
   }
 
+  function setFieldError(inputEl, errorEl, message) {
+    var hasError = Boolean(message);
+    inputEl.classList.toggle("input-error", hasError);
+    inputEl.setAttribute("aria-invalid", hasError ? "true" : "false");
+    errorEl.textContent = message || "";
+    errorEl.classList.toggle("hidden", !hasError);
+  }
+
+  function setFormError(message) {
+    formErrorEl.textContent = message || "";
+    formErrorEl.classList.toggle("hidden", !message);
+  }
+
+  function validateInputs() {
+    var errors = {
+      customCapacity: "",
+      tareWeight: "",
+      currentWeight: "",
+      summary: "",
+    };
+
+    var tare = parseNum(tareWeightEl.value);
+    var current = parseNum(currentWeightEl.value);
+
+    if (tareWeightEl.value.trim() === "") {
+      errors.tareWeight = "Enter tare weight.";
+    } else if (!isFinite(tare)) {
+      errors.tareWeight = "Tare weight must be a valid number.";
+    } else if (tare < 0) {
+      errors.tareWeight = "Tare weight cannot be negative.";
+    }
+
+    if (currentWeightEl.value.trim() === "") {
+      errors.currentWeight = "Enter current weight.";
+    } else if (!isFinite(current)) {
+      errors.currentWeight = "Current weight must be a valid number.";
+    } else if (current < 0) {
+      errors.currentWeight = "Current weight cannot be negative.";
+    }
+
+    if (tankTypeEl.value === "custom") {
+      var capacity = parseNum(customCapacityEl.value);
+      if (customCapacityEl.value.trim() === "") {
+        errors.customCapacity = "Enter tank capacity for custom tank.";
+      } else if (!isFinite(capacity)) {
+        errors.customCapacity = "Tank capacity must be a valid number.";
+      } else if (capacity <= 0) {
+        errors.customCapacity = "Tank capacity must be greater than 0.";
+      }
+    }
+
+    var hasError = Boolean(errors.customCapacity || errors.tareWeight || errors.currentWeight);
+    if (hasError) {
+      errors.summary = "Please fix the highlighted fields to calculate.";
+    }
+
+    return errors;
+  }
+
+  function updateValidationUI(errors) {
+    setFieldError(customCapacityEl, customCapacityErrorEl, errors.customCapacity);
+    setFieldError(tareWeightEl, tareWeightErrorEl, errors.tareWeight);
+    setFieldError(currentWeightEl, currentWeightErrorEl, errors.currentWeight);
+    setFormError(errors.summary);
+  }
+
   function calculate() {
+    var errors = validateInputs();
+    updateValidationUI(errors);
+
+    if (errors.summary) {
+      remainingOutEl.textContent = "0.0";
+      percentOutEl.textContent = "0";
+      gallonsOutEl.textContent = "0.00";
+      setNotes(false, false);
+      return;
+    }
+
     var capacity = getCapacity();
     var tare = parseNum(tareWeightEl.value);
     var current = parseNum(currentWeightEl.value);
 
     var rawRemaining = current - tare;
-    var hasCurrentAndTare = isFinite(current) && isFinite(tare);
-
-    var remaining = hasCurrentAndTare ? Math.max(0, rawRemaining) : 0;
+    var remaining = Math.max(0, rawRemaining);
     var showCapNote = false;
 
     if (isFinite(capacity) && capacity > 0 && remaining > capacity) {
@@ -90,14 +170,14 @@
       showCapNote = true;
     }
 
-    var percent = isFinite(capacity) && capacity > 0 ? Math.round((remaining / capacity) * 100) : 0;
+    var percent = Math.round((remaining / capacity) * 100);
     var gallons = remaining * GALLONS_PER_POUND;
 
     remainingOutEl.textContent = formatFixed(remaining, 1);
     percentOutEl.textContent = String(percent);
     gallonsOutEl.textContent = formatFixed(gallons, 2);
 
-    var showTareNote = hasCurrentAndTare && current < tare;
+    var showTareNote = current < tare;
     setNotes(showCapNote, showTareNote);
   }
 
@@ -107,8 +187,17 @@
     tareWeightEl.value = "";
     currentWeightEl.value = "";
     showCustomCapacity();
+
+    setFieldError(customCapacityEl, customCapacityErrorEl, "");
+    setFieldError(tareWeightEl, tareWeightErrorEl, "");
+    setFieldError(currentWeightEl, currentWeightErrorEl, "");
+    setFormError("");
+
     saveState();
-    calculate();
+    remainingOutEl.textContent = "0.0";
+    percentOutEl.textContent = "0";
+    gallonsOutEl.textContent = "0.00";
+    setNotes(false, false);
   }
 
   function onInputChanged() {

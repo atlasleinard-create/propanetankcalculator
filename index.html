@@ -25,22 +25,50 @@
 
           <div class="field hidden" id="customCapacityWrap">
             <label for="customCapacity">Tank capacity (lb)</label>
-            <input id="customCapacity" name="customCapacity" type="number" min="0" step="0.1" inputmode="decimal" />
+            <input
+              id="customCapacity"
+              name="customCapacity"
+              type="number"
+              min="0"
+              step="0.1"
+              inputmode="decimal"
+              aria-describedby="customCapacityError"
+            />
+            <p id="customCapacityError" class="error hidden"></p>
           </div>
 
           <div class="field">
             <label for="tareWeight">Tare Weight (TW) (lb)</label>
-            <input id="tareWeight" name="tareWeight" type="number" min="0" step="0.1" inputmode="decimal" />
-            <p class="hint">Stamped on tank collar, empty tank weight.</p>
+            <input
+              id="tareWeight"
+              name="tareWeight"
+              type="number"
+              min="0"
+              step="0.1"
+              inputmode="decimal"
+              aria-describedby="tareWeightHint tareWeightError"
+            />
+            <p id="tareWeightHint" class="hint">Stamped on tank collar, empty tank weight.</p>
+            <p id="tareWeightError" class="error hidden"></p>
           </div>
 
           <div class="field">
             <label for="currentWeight">Current weight (lb)</label>
-            <input id="currentWeight" name="currentWeight" type="number" min="0" step="0.1" inputmode="decimal" />
-            <p class="hint">Tank + propane on a scale.</p>
+            <input
+              id="currentWeight"
+              name="currentWeight"
+              type="number"
+              min="0"
+              step="0.1"
+              inputmode="decimal"
+              aria-describedby="currentWeightHint currentWeightError"
+            />
+            <p id="currentWeightHint" class="hint">Tank + propane on a scale.</p>
+            <p id="currentWeightError" class="error hidden"></p>
           </div>
 
           <p class="example">Example: TW 25.0, scale 37.0 -> ~12.0 lb remaining.</p>
+          <p id="formError" class="error summary hidden" role="status" aria-live="polite"></p>
 
           <div class="actions">
             <button type="button" id="calculateBtn">Calculate</button>
@@ -73,6 +101,16 @@
         <h2>How it works</h2>
         <p>Scale weight - tare weight = pounds of propane.</p>
         <p>Exchange tanks are sometimes underfilled, so usable capacity may be less than the labeled 20 lb in practice.</p>
+      </section>
+
+      <section class="card small placeholder-section" aria-disabled="true">
+        <h2>Recommended gear (coming soon)</h2>
+        <p class="hint">Placeholder for future affiliate links. This section is disabled for now.</p>
+        <ul class="placeholder-list" aria-hidden="true">
+          <li>Digital hanging scale (placeholder)</li>
+          <li>Tank level gauge (placeholder)</li>
+          <li>Leak detector spray (placeholder)</li>
+        </ul>
       </section>
     </main>
 
