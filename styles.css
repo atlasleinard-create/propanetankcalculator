@@ -1,0 +1,161 @@
+:root {
+  --bg: #f4f7fb;
+  --card: #ffffff;
+  --text: #1f2937;
+  --muted: #5b6677;
+  --border: #d6deea;
+  --primary: #0b5fff;
+  --primary-hover: #084fd6;
+  --secondary-bg: #eef2f8;
+  --warning: #8a2d00;
+  --note: #2d3a4d;
+  --shadow: 0 10px 24px rgba(14, 30, 62, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+  color: var(--text);
+  background: linear-gradient(180deg, #eef4ff 0%, var(--bg) 35%);
+}
+
+.container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 20px;
+  display: grid;
+  gap: 16px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 18px;
+}
+
+.card.small {
+  box-shadow: none;
+}
+
+h1,
+h2 {
+  margin: 0 0 8px;
+}
+
+.subtitle {
+  margin: 0 0 18px;
+  color: var(--muted);
+}
+
+.field {
+  margin-bottom: 14px;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+input,
+select,
+button {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  font: inherit;
+}
+
+input:focus,
+select:focus,
+button:focus {
+  outline: 3px solid rgba(11, 95, 255, 0.2);
+  outline-offset: 1px;
+}
+
+.hint,
+.example {
+  margin: 6px 2px 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+button {
+  border: none;
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--primary-hover);
+}
+
+button.secondary {
+  background: var(--secondary-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+button.secondary:hover {
+  background: #e2e8f2;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.result-label {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.result-value {
+  margin: 3px 0 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.note {
+  margin-top: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #edf3ff;
+  color: var(--note);
+}
+
+.note.warning {
+  background: #fff2eb;
+  color: var(--warning);
+}
+
+.hidden {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .actions {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .result-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

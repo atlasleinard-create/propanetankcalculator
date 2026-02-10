@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Propane Tank Calculator</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <section class="card">
+        <h1>Propane Tank Calculator</h1>
+        <p class="subtitle">Estimate propane remaining, percent full, and gallons left.</p>
+
+        <form id="propane-form" novalidate>
+          <div class="field">
+            <label for="tankType">Tank type</label>
+            <select id="tankType" name="tankType">
+              <option value="20">Standard 20 lb tank</option>
+              <option value="15">15 lb tank</option>
+              <option value="30">30 lb tank</option>
+              <option value="custom">Custom...</option>
+            </select>
+          </div>
+
+          <div class="field hidden" id="customCapacityWrap">
+            <label for="customCapacity">Tank capacity (lb)</label>
+            <input id="customCapacity" name="customCapacity" type="number" min="0" step="0.1" inputmode="decimal" />
+          </div>
+
+          <div class="field">
+            <label for="tareWeight">Tare Weight (TW) (lb)</label>
+            <input id="tareWeight" name="tareWeight" type="number" min="0" step="0.1" inputmode="decimal" />
+            <p class="hint">Stamped on tank collar, empty tank weight.</p>
+          </div>
+
+          <div class="field">
+            <label for="currentWeight">Current weight (lb)</label>
+            <input id="currentWeight" name="currentWeight" type="number" min="0" step="0.1" inputmode="decimal" />
+            <p class="hint">Tank + propane on a scale.</p>
+          </div>
+
+          <p class="example">Example: TW 25.0, scale 37.0 -> ~12.0 lb remaining.</p>
+
+          <div class="actions">
+            <button type="button" id="calculateBtn">Calculate</button>
+            <button type="button" id="resetBtn" class="secondary">Reset</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="card" aria-live="polite">
+        <h2>Results</h2>
+        <div class="result-grid">
+          <div>
+            <p class="result-label">Propane remaining</p>
+            <p class="result-value"><span id="remainingOut">0.0</span> lb</p>
+          </div>
+          <div>
+            <p class="result-label">Percent full</p>
+            <p class="result-value"><span id="percentOut">0</span>%</p>
+          </div>
+          <div>
+            <p class="result-label">Estimated gallons remaining</p>
+            <p class="result-value"><span id="gallonsOut">0.00</span> gal</p>
+          </div>
+        </div>
+        <p id="capNote" class="note hidden">Capped to capacity - check TW/scale.</p>
+        <p id="tareNote" class="note warning hidden">Current weight is less than tare weight - check your numbers.</p>
+      </section>
+
+      <section class="card small">
+        <h2>How it works</h2>
+        <p>Scale weight - tare weight = pounds of propane.</p>
+        <p>Exchange tanks are sometimes underfilled, so usable capacity may be less than the labeled 20 lb in practice.</p>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
