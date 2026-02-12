@@ -145,11 +145,38 @@
     setFormError(errors.summary);
   }
 
-  function calculate() {
+  function trackEvent(name, payload) {
+    var data = payload || {};
+
+    if (typeof window !== "undefined" && typeof window.plausible === "function") {
+      window.plausible(name, { props: data });
+      return;
+    }
+
+    if (typeof console !== "undefined" && typeof console.info === "function") {
+      console.info("[analytics]", name, data);
+    }
+  }
+
+  function calculate(trigger) {
+    if (trigger === "button") {
+      trackEvent("calculation_started", {
+        tankType: tankTypeEl.value,
+      });
+    }
+
     var errors = validateInputs();
     updateValidationUI(errors);
 
     if (errors.summary) {
+      trackEvent("validation_error", {
+        trigger: trigger || "unknown",
+        tankType: tankTypeEl.value,
+        hasCustomCapacityError: Boolean(errors.customCapacity),
+        hasTareWeightError: Boolean(errors.tareWeight),
+        hasCurrentWeightError: Boolean(errors.currentWeight),
+      });
+
       remainingOutEl.textContent = "0.0";
       percentOutEl.textContent = "0";
       gallonsOutEl.textContent = "0.00";
@@ -179,6 +206,12 @@
 
     var showTareNote = current < tare;
     setNotes(showCapNote, showTareNote);
+
+    trackEvent("calculation_success", {
+      trigger: trigger || "unknown",
+      tankType: tankTypeEl.value,
+      usedCustomCapacity: tankTypeEl.value === "custom",
+    });
   }
 
   function resetAll() {
@@ -203,7 +236,7 @@
   function onInputChanged() {
     showCustomCapacity();
     saveState();
-    calculate();
+    calculate("input");
   }
 
   [tankTypeEl, customCapacityEl, tareWeightEl, currentWeightEl].forEach(function (el) {
@@ -212,7 +245,7 @@
   });
 
   calculateBtnEl.addEventListener("click", function () {
-    calculate();
+    calculate("button");
   });
 
   resetBtnEl.addEventListener("click", function () {
@@ -221,5 +254,5 @@
 
   loadState();
   showCustomCapacity();
-  calculate();
+  calculate("init");
 })();
