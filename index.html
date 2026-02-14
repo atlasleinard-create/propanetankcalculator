@@ -106,6 +106,17 @@
             <p class="result-value"><span id="gallonsOut">0.00</span> gal</p>
           </div>
         </div>
+        <div class="runtime-wrap">
+          <label for="usageLevel" class="runtime-label">Estimated usage level</label>
+          <select id="usageLevel" name="usageLevel" aria-describedby="runtimeHint">
+            <option value="low">Low use</option>
+            <option value="medium" selected>Medium use</option>
+            <option value="high">High use</option>
+          </select>
+          <p id="runtimeHint" class="hint">Runtime is an estimate. Real usage varies by appliance, weather, and settings.</p>
+          <p class="note" id="runtimeOut">Estimated runtime: 0.0 hours at Medium use.</p>
+        </div>
+
         <p id="capNote" class="note hidden">Capped to capacity - check TW/scale.</p>
         <p id="tareNote" class="note warning hidden">Scale weight cannot be less than tare weight - double-check your numbers.</p>
       </section>

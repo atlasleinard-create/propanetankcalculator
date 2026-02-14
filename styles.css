@@ -230,6 +230,16 @@ button.secondary:active {
   color: var(--warning);
 }
 
+.runtime-wrap {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #e8edf5;
+}
+
+.runtime-label {
+  margin-bottom: 6px;
+}
+
 .hidden {
   display: none;
 }

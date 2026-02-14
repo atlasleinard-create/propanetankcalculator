@@ -1,18 +1,25 @@
 (function () {
   var STORAGE_KEY = "propaneToolState";
   var GALLONS_PER_POUND = 4.7 / 20;
+  var USAGE_RATES = {
+    low: 0.4,
+    medium: 0.7,
+    high: 1.2,
+  };
 
   var tankTypeEl = document.getElementById("tankType");
   var customCapacityWrapEl = document.getElementById("customCapacityWrap");
   var customCapacityEl = document.getElementById("customCapacity");
   var tareWeightEl = document.getElementById("tareWeight");
   var currentWeightEl = document.getElementById("currentWeight");
+  var usageLevelEl = document.getElementById("usageLevel");
   var calculateBtnEl = document.getElementById("calculateBtn");
   var resetBtnEl = document.getElementById("resetBtn");
 
   var remainingOutEl = document.getElementById("remainingOut");
   var percentOutEl = document.getElementById("percentOut");
   var gallonsOutEl = document.getElementById("gallonsOut");
+  var runtimeOutEl = document.getElementById("runtimeOut");
   var capNoteEl = document.getElementById("capNote");
   var tareNoteEl = document.getElementById("tareNote");
 
@@ -47,12 +54,30 @@
     customCapacityWrapEl.classList.toggle("hidden", !isCustom);
   }
 
+  function getUsageLabel(level) {
+    if (level === "low") {
+      return "Low";
+    }
+    if (level === "high") {
+      return "High";
+    }
+    return "Medium";
+  }
+
+  function updateRuntime(gallons) {
+    var usageLevel = usageLevelEl.value || "medium";
+    var burnRate = USAGE_RATES[usageLevel] || USAGE_RATES.medium;
+    var hours = burnRate > 0 ? gallons / burnRate : 0;
+    runtimeOutEl.textContent = "Estimated runtime: " + formatFixed(hours, 1) + " hours at " + getUsageLabel(usageLevel) + " use.";
+  }
+
   function saveState() {
     var state = {
       tankType: tankTypeEl.value,
       customCapacity: customCapacityEl.value,
       tareWeight: tareWeightEl.value,
       currentWeight: currentWeightEl.value,
+      usageLevel: usageLevelEl.value,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
@@ -69,6 +94,7 @@
       customCapacityEl.value = state.customCapacity || "";
       tareWeightEl.value = state.tareWeight || "";
       currentWeightEl.value = state.currentWeight || "";
+      usageLevelEl.value = state.usageLevel || "medium";
     } catch (_err) {
       localStorage.removeItem(STORAGE_KEY);
     }
@@ -180,6 +206,7 @@
       remainingOutEl.textContent = "0.0";
       percentOutEl.textContent = "0";
       gallonsOutEl.textContent = "0.00";
+      updateRuntime(0);
       setNotes(false, false);
       return;
     }
@@ -203,6 +230,7 @@
     remainingOutEl.textContent = formatFixed(remaining, 1);
     percentOutEl.textContent = String(percent);
     gallonsOutEl.textContent = formatFixed(gallons, 2);
+    updateRuntime(gallons);
 
     var showTareNote = current < tare;
     setNotes(showCapNote, showTareNote);
@@ -219,6 +247,7 @@
     customCapacityEl.value = "";
     tareWeightEl.value = "";
     currentWeightEl.value = "";
+    usageLevelEl.value = "medium";
     showCustomCapacity();
 
     setFieldError(customCapacityEl, customCapacityErrorEl, "");
@@ -230,6 +259,7 @@
     remainingOutEl.textContent = "0.0";
     percentOutEl.textContent = "0";
     gallonsOutEl.textContent = "0.00";
+    updateRuntime(0);
     setNotes(false, false);
   }
 
@@ -239,7 +269,7 @@
     calculate("input");
   }
 
-  [tankTypeEl, customCapacityEl, tareWeightEl, currentWeightEl].forEach(function (el) {
+  [tankTypeEl, customCapacityEl, tareWeightEl, currentWeightEl, usageLevelEl].forEach(function (el) {
     el.addEventListener("input", onInputChanged);
     el.addEventListener("change", onInputChanged);
   });
