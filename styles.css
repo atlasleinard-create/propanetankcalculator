@@ -164,6 +164,28 @@ button:focus {
   margin-top: 12px;
 }
 
+.preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.preset-btn {
+  width: auto;
+  min-height: 36px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #f7f9fd;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.share-btn {
+  margin-top: 8px;
+}
+
 button {
   border: none;
   background: var(--primary);
@@ -194,6 +216,21 @@ button.secondary:hover {
 
 button.secondary:active {
   background: #d7e0ee;
+}
+
+button.preset-btn {
+  background: #f7f9fd;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+button.preset-btn:hover {
+  background: #ebf1fa;
+}
+
+button.preset-btn:active {
+  background: #e3ebf8;
+  transform: none;
 }
 
 .result-grid {

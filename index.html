@@ -10,7 +10,7 @@
     />
     <link rel="canonical" href="https://propanetankcalculator.com/" />
     <meta name="robots" content="index,follow" />
-    <link rel="stylesheet" href="styles.css?v=20260214-1" />
+    <link rel="stylesheet" href="styles.css?v=20260218-2" />
   </head>
   <body>
     <main class="container">
@@ -30,6 +30,12 @@
               <option value="custom">Custom...</option>
             </select>
             <p class="hint">Pick a common size, or use Custom for any tank.</p>
+            <div class="preset-row" aria-label="Quick tank presets">
+              <button type="button" class="preset-btn" data-preset="20">20 lb</button>
+              <button type="button" class="preset-btn" data-preset="30">30 lb</button>
+              <button type="button" class="preset-btn" data-preset="40">40 lb</button>
+              <button type="button" class="preset-btn" data-preset="100">100 lb</button>
+            </div>
           </div>
 
           <div class="field hidden" id="customCapacityWrap">
@@ -115,6 +121,8 @@
           </select>
           <p id="runtimeHint" class="hint">Runtime is an estimate. Real usage varies by appliance, weather, and settings.</p>
           <p class="note" id="runtimeOut">Estimated runtime: 0.0 hours at Medium use.</p>
+          <button type="button" id="shareResultBtn" class="secondary share-btn">Copy share text</button>
+          <p id="shareStatus" class="hint hidden" role="status" aria-live="polite"></p>
         </div>
 
         <p id="capNote" class="note hidden">Capped to capacity - check TW/scale.</p>
@@ -172,6 +180,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=20260214-1"></script>
+    <script src="app.js?v=20260218-2"></script>
   </body>
 </html>

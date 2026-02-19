@@ -15,6 +15,8 @@
   var usageLevelEl = document.getElementById("usageLevel");
   var calculateBtnEl = document.getElementById("calculateBtn");
   var resetBtnEl = document.getElementById("resetBtn");
+  var shareResultBtnEl = document.getElementById("shareResultBtn");
+  var shareStatusEl = document.getElementById("shareStatus");
 
   var remainingOutEl = document.getElementById("remainingOut");
   var percentOutEl = document.getElementById("percentOut");
@@ -69,6 +71,33 @@
     var burnRate = USAGE_RATES[usageLevel] || USAGE_RATES.medium;
     var hours = burnRate > 0 ? gallons / burnRate : 0;
     runtimeOutEl.textContent = "Estimated runtime: " + formatFixed(hours, 1) + " hours at " + getUsageLabel(usageLevel) + " use.";
+  }
+
+  function getShareText() {
+    var remaining = remainingOutEl.textContent || "0.0";
+    var percent = percentOutEl.textContent || "0";
+    var gallons = gallonsOutEl.textContent || "0.00";
+    var usage = getUsageLabel(usageLevelEl.value || "medium");
+    var runtime = runtimeOutEl.textContent.replace("Estimated runtime: ", "") || "0.0 hours";
+
+    return (
+      "Propane update: ~" +
+      remaining +
+      " lb left (" +
+      percent +
+      "% full, ~" +
+      gallons +
+      " gal). Runtime estimate: " +
+      runtime +
+      " at " +
+      usage +
+      " use."
+    );
+  }
+
+  function setShareStatus(message) {
+    shareStatusEl.textContent = message || "";
+    shareStatusEl.classList.toggle("hidden", !message);
   }
 
   function saveState() {
@@ -274,13 +303,45 @@
     el.addEventListener("change", onInputChanged);
   });
 
+  Array.prototype.slice.call(document.querySelectorAll(".preset-btn")).forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var preset = btn.getAttribute("data-preset");
+      if (!preset) {
+        return;
+      }
+      tankTypeEl.value = preset;
+      showCustomCapacity();
+      saveState();
+      calculate("preset");
+    });
+  });
+
   calculateBtnEl.addEventListener("click", function () {
     calculate("button");
   });
 
   resetBtnEl.addEventListener("click", function () {
     resetAll();
+    setShareStatus("");
   });
+
+  if (shareResultBtnEl) {
+    shareResultBtnEl.addEventListener("click", function () {
+      var text = getShareText();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard
+          .writeText(text)
+          .then(function () {
+            setShareStatus("Share text copied.");
+          })
+          .catch(function () {
+            setShareStatus("Copy failed. You can copy manually from the results.");
+          });
+      } else {
+        setShareStatus("Clipboard unavailable on this device/browser.");
+      }
+    });
+  }
 
   loadState();
   showCustomCapacity();
