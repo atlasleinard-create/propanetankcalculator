@@ -8,15 +8,16 @@
     <link rel="canonical" href="https://propanetankcalculator.com/" />
     <meta name="robots" content="index,follow" />
     <link rel="icon" href="/logo.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="/brand.css?v=20260218-4" />
+    <link rel="stylesheet" href="/brand.css?v=20260218-5" />
   </head>
   <body>
     <main class="site-shell">
       <header class="topbar">
         <a href="/" class="brand-link"><img src="/logo.svg" alt="Simple Project Tools" class="brand-logo" /></a>
         <nav class="nav-links">
-          <a href="#calculators">Calculators</a>
+          <a class="active" href="#calculators">Calculators</a>
           <a href="#principles">Principles</a>
+          <a href="#footer">About</a>
         </nav>
       </header>
 
@@ -35,14 +36,17 @@
         </div>
       </section>
 
-      <section class="panel" id="calculators" style="margin-top:12px;">
+      <section class="panel section-space" id="calculators">
         <h2>Calculator categories</h2>
         <div class="grid cols-2">
           <article class="tool-card">
             <div class="icon-bubble">🔥</div>
             <h3>Fuel & Utility</h3>
             <p>Propane, tank refill timing, and other utility-focused estimators.</p>
-            <span class="badge">LIVE</span>
+            <div class="card-footer">
+              <span class="badge">LIVE</span>
+              <span class="card-arrow">→</span>
+            </div>
             <div class="button-row"><a class="btn btn-primary" href="/propane-tank-calculator/">Open</a></div>
           </article>
 
@@ -50,26 +54,35 @@
             <div class="icon-bubble">🪵</div>
             <h3>Flooring</h3>
             <p>Square-foot planning with waste factor for one-trip purchasing.</p>
-            <span class="badge next">NEXT</span>
+            <div class="card-footer">
+              <span class="badge next">NEXT</span>
+              <span class="card-arrow">→</span>
+            </div>
           </article>
 
           <article class="tool-card">
             <div class="icon-bubble">🌿</div>
             <h3>Landscaping</h3>
             <p>Mulch, edging, and yard material calculators for weekend projects.</p>
-            <span class="badge next">PLANNED</span>
+            <div class="card-footer">
+              <span class="badge next">PLANNED</span>
+              <span class="card-arrow">→</span>
+            </div>
           </article>
 
           <article class="tool-card">
             <div class="icon-bubble">🧱</div>
             <h3>Masonry</h3>
             <p>Brick and perimeter estimators with practical spacing assumptions.</p>
-            <span class="badge next">PLANNED</span>
+            <div class="card-footer">
+              <span class="badge next">PLANNED</span>
+              <span class="card-arrow">→</span>
+            </div>
           </article>
         </div>
       </section>
 
-      <section class="panel" id="principles" style="margin-top:12px;">
+      <section class="panel section-space" id="principles">
         <h2>Brand principles</h2>
         <ul>
           <li>No popups. No clutter. No junk.</li>
@@ -78,8 +91,16 @@
         </ul>
       </section>
 
-      <footer class="panel footnote" style="margin-top:12px;">
-        Disclosure: Some links may be affiliate links. If you buy, we may earn a commission at no extra cost to you.
+      <footer class="panel section-space footnote" id="footer">
+        <div class="footer-grid">
+          <div class="footer-links">
+            <a href="#calculators">Calculators</a>
+            <a href="#principles">Principles</a>
+            <a href="/propane-tank-calculator/">Propane Tool</a>
+          </div>
+          <div>Built for DIYers who want practical, trustworthy tools.</div>
+          <div>Disclosure: Some links may be affiliate links. If you buy, we may earn a commission at no extra cost to you.</div>
+        </div>
       </footer>
     </main>
   </body>
