@@ -1,0 +1,105 @@
+:root {
+  --bg: #f3f6fb;
+  --surface: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --line: #dbe3ef;
+  --primary: #1d4ed8;
+  --primary-hover: #1e40af;
+  --accent: #16a34a;
+  --shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(180deg, #eff4ff 0%, var(--bg) 48%);
+  color: var(--text);
+}
+
+a { color: var(--primary); }
+
+.site-shell {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 14px 16px 32px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 10px 14px;
+  box-shadow: var(--shadow);
+  margin-bottom: 14px;
+}
+
+.brand-logo { height: 38px; width: auto; }
+.brand-link { display: inline-flex; align-items: center; text-decoration: none; }
+
+.nav-links { display: flex; gap: 12px; }
+.nav-links a {
+  text-decoration: none;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.nav-links a:hover { color: var(--text); }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+.hero-title { margin: 0 0 8px; font-size: clamp(1.4rem, 2.2vw + 0.8rem, 2.2rem); }
+.hero-sub { margin: 0; color: var(--muted); max-width: 70ch; }
+
+.button-row { margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; }
+.btn {
+  min-height: 42px;
+  border-radius: 10px;
+  padding: 10px 14px;
+  text-decoration: none;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-secondary { background: #eef2ff; color: var(--text); border: 1px solid var(--line); }
+
+.grid {
+  display: grid;
+  gap: 12px;
+}
+@media (min-width: 760px) { .grid.cols-2 { grid-template-columns: 1fr 1fr; } }
+
+.tool-card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #f8fbff;
+  padding: 14px;
+}
+.tool-card h3 { margin: 8px 0 6px; }
+.tool-card p { margin: 0 0 10px; color: var(--muted); }
+.badge {
+  display: inline-flex;
+  font-size: .78rem;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #e2f6e8;
+  color: #166534;
+  font-weight: 700;
+}
+.badge.next { background: #e6edff; color: #1e3a8a; }
+
+.footnote { color: var(--muted); font-size: .9rem; }

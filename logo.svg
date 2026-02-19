@@ -1,0 +1,8 @@
+<svg width="320" height="64" viewBox="0 0 320 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Simple Project Tools logo">
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#0F172A"/>
+  <path d="M18 34.5L31 21L46 36L31 49L18 34.5Z" fill="#22C55E"/>
+  <path d="M31 21L46 29V36L31 28V21Z" fill="#16A34A"/>
+  <path d="M18 34.5L31 42V49L18 41V34.5Z" fill="#4ADE80"/>
+  <text x="78" y="28" fill="#0F172A" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="800" font-size="22">Simple Project</text>
+  <text x="78" y="49" fill="#334155" font-family="Inter, Segoe UI, Arial, sans-serif" font-weight="700" font-size="18">Tools</text>
+</svg>

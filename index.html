@@ -3,87 +3,72 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DIY Calculator Hub | Practical Home Project Calculators</title>
-    <meta
-      name="description"
-      content="Fast, practical DIY calculators to help you estimate materials and avoid extra trips to the store."
-    />
+    <title>Simple Project Tools | Trusted DIY Calculators</title>
+    <meta name="description" content="Trusted, practical calculators for DIY home projects. No clutter. Just useful answers." />
     <link rel="canonical" href="https://propanetankcalculator.com/" />
     <meta name="robots" content="index,follow" />
-    <style>
-      :root { --bg:#f6f8fc; --card:#fff; --text:#1f2937; --muted:#5b6677; --border:#d6deea; --primary:#0b5fff; }
-      * { box-sizing:border-box; }
-      body { margin:0; font-family:Inter,Segoe UI,Arial,sans-serif; background:linear-gradient(180deg,#f3f7ff 0%,var(--bg) 45%); color:var(--text); }
-      .container { max-width:920px; margin:0 auto; padding:20px 16px 30px; display:grid; gap:14px; }
-      .card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px; box-shadow:0 6px 18px rgba(14,30,62,.06); }
-      h1,h2 { margin:0 0 10px; line-height:1.2; }
-      h1 { font-size:clamp(1.4rem,2.5vw + .9rem,2rem); }
-      .subtitle { margin:0; color:var(--muted); line-height:1.45; }
-      .actions { margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; }
-      .btn { text-decoration:none; display:inline-flex; align-items:center; justify-content:center; min-height:42px; padding:10px 14px; border-radius:10px; font-weight:700; }
-      .btn-primary { background:var(--primary); color:#fff; }
-      .btn-secondary { border:1px solid var(--border); color:var(--text); background:#eef2f8; }
-      .grid { display:grid; gap:12px; }
-      .calc { border:1px solid var(--border); border-radius:12px; padding:14px; background:#f9fbff; }
-      .calc h3 { margin:0 0 6px; }
-      .calc p { margin:0 0 10px; color:var(--muted); }
-      .pill { display:inline-block; font-size:.78rem; padding:4px 8px; border-radius:999px; background:#edf3ff; color:#36518f; margin-bottom:8px; }
-      ul { margin:0; padding-left:18px; color:var(--muted); }
-      footer { color:var(--muted); font-size:.9rem; }
-      @media (min-width:700px){ .grid { grid-template-columns:1fr 1fr; } }
-    </style>
+    <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/brand.css?v=20260218-3" />
   </head>
   <body>
-    <main class="container">
-      <section class="card">
-        <h1>DIY Calculators That Save You Extra Trips to the Store</h1>
-        <p class="subtitle">Fast, practical, no-junk tools for real home projects.</p>
-        <div class="actions">
-          <a class="btn btn-primary" href="/propane-tank-calculator/">Start with Propane Calculator</a>
-          <a class="btn btn-secondary" href="#calculators">Browse calculators</a>
+    <main class="site-shell">
+      <header class="topbar">
+        <a href="/" class="brand-link"><img src="/logo.svg" alt="Simple Project Tools" class="brand-logo" /></a>
+        <nav class="nav-links">
+          <a href="#calculators">Calculators</a>
+          <a href="#principles">Principles</a>
+        </nav>
+      </header>
+
+      <section class="panel">
+        <h1 class="hero-title">Professional DIY calculators for real weekend projects</h1>
+        <p class="hero-sub">Fast answers, clean design, and practical output you can actually use at the store. Built to be helpful first.</p>
+        <div class="button-row">
+          <a class="btn btn-primary" href="/propane-tank-calculator/">Open Propane Calculator</a>
+          <a class="btn btn-secondary" href="#calculators">Browse tools</a>
         </div>
       </section>
 
-      <section class="card" id="calculators">
+      <section class="panel" id="calculators" style="margin-top:12px;">
         <h2>Calculator Hub</h2>
-        <div class="grid">
-          <article class="calc">
-            <span class="pill">Live</span>
+        <div class="grid cols-2">
+          <article class="tool-card">
+            <span class="badge">LIVE</span>
             <h3>Propane Tank Calculator</h3>
-            <p>Estimate propane remaining in pounds, percent full, gallons, and runtime.</p>
+            <p>Estimate pounds remaining, percent full, gallons left, and runtime estimate.</p>
             <a class="btn btn-primary" href="/propane-tank-calculator/">Open calculator</a>
           </article>
 
-          <article class="calc">
-            <span class="pill">Next</span>
+          <article class="tool-card">
+            <span class="badge next">NEXT</span>
             <h3>Flooring Calculator</h3>
-            <p>Estimate area + waste so you buy enough planks the first time.</p>
+            <p>Estimate square footage and add waste buffer so you buy once, not twice.</p>
           </article>
 
-          <article class="calc">
-            <span class="pill">Planned</span>
+          <article class="tool-card">
+            <span class="badge next">PLANNED</span>
             <h3>Mulch Calculator</h3>
-            <p>Get bag or cubic-yard estimates based on bed dimensions and depth.</p>
+            <p>Find bag/cubic-yard quantity from length, width, and mulch depth.</p>
           </article>
 
-          <article class="calc">
-            <span class="pill">Planned</span>
+          <article class="tool-card">
+            <span class="badge next">PLANNED</span>
             <h3>Brick Edging Calculator</h3>
-            <p>Estimate brick count from total perimeter and spacing assumptions.</p>
+            <p>Estimate number of bricks needed based on perimeter and spacing.</p>
           </article>
         </div>
       </section>
 
-      <section class="card">
-        <h2>Built for actual DIY decisions</h2>
+      <section class="panel" id="principles" style="margin-top:12px;">
+        <h2>Brand principles</h2>
         <ul>
-          <li>No popups, no clutter</li>
-          <li>Store-ready estimates in plain English</li>
-          <li>Optional shopping links with clear disclosure</li>
+          <li>No popups. No clutter. No junk.</li>
+          <li>Useful output in plain English.</li>
+          <li>Clear affiliate disclosures, no pressure tactics.</li>
         </ul>
       </section>
 
-      <footer class="card">
+      <footer class="panel footnote" style="margin-top:12px;">
         Disclosure: Some links may be affiliate links. If you buy, we may earn a commission at no extra cost to you.
       </footer>
     </main>
