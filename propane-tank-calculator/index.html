@@ -28,6 +28,14 @@
         <p><a href="/">← Back to Calculator Hub</a></p>
         <h1>Propane Tank Calculator</h1>
         <p class="subtitle">Estimate propane remaining, percent full, and gallons left.</p>
+        <div class="field">
+          <label for="unitSystem">Units</label>
+          <select id="unitSystem" name="unitSystem">
+            <option value="imperial" selected>Imperial (lb, gal)</option>
+            <option value="metric">Metric (kg, L)</option>
+          </select>
+          <p class="hint">Tank presets stay in common lb sizes; results can display in metric for Canada/global users.</p>
+        </div>
 
         <form id="propane-form" novalidate>
           <div class="field">
@@ -112,15 +120,17 @@
         <div class="result-grid">
           <div>
             <p class="result-label">Propane remaining</p>
-            <p class="result-value"><span id="remainingOut">0.0</span> lb</p>
+            <p class="result-value"><span id="remainingOut">0.0</span> <span id="massUnitOut">lb</span></p>
+            <p class="hint" id="remainingSecondaryOut">0.00 kg</p>
           </div>
           <div>
             <p class="result-label">Percent full</p>
             <p class="result-value"><span id="percentOut">0</span>%</p>
           </div>
           <div>
-            <p class="result-label">Estimated gallons remaining</p>
-            <p class="result-value"><span id="gallonsOut">0.00</span> gal</p>
+            <p class="result-label">Estimated volume remaining</p>
+            <p class="result-value"><span id="gallonsOut">0.00</span> <span id="volumeUnitOut">gal</span></p>
+            <p class="hint" id="volumeSecondaryOut">0.00 L</p>
           </div>
         </div>
         <div class="runtime-wrap">
@@ -191,6 +201,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=20260218-2"></script>
+    <script src="app.js?v=20260222-1"></script>
   </body>
 </html>

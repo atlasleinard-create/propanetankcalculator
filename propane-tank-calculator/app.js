@@ -1,6 +1,8 @@
 (function () {
   var STORAGE_KEY = "propaneToolState";
   var GALLONS_PER_POUND = 4.7 / 20;
+  var KG_PER_POUND = 0.45359237;
+  var L_PER_GALLON = 3.785411784;
   var USAGE_RATES = {
     low: 0.4,
     medium: 0.7,
@@ -13,6 +15,7 @@
   var tareWeightEl = document.getElementById("tareWeight");
   var currentWeightEl = document.getElementById("currentWeight");
   var usageLevelEl = document.getElementById("usageLevel");
+  var unitSystemEl = document.getElementById("unitSystem");
   var calculateBtnEl = document.getElementById("calculateBtn");
   var resetBtnEl = document.getElementById("resetBtn");
   var shareResultBtnEl = document.getElementById("shareResultBtn");
@@ -21,6 +24,10 @@
   var remainingOutEl = document.getElementById("remainingOut");
   var percentOutEl = document.getElementById("percentOut");
   var gallonsOutEl = document.getElementById("gallonsOut");
+  var massUnitOutEl = document.getElementById("massUnitOut");
+  var volumeUnitOutEl = document.getElementById("volumeUnitOut");
+  var remainingSecondaryOutEl = document.getElementById("remainingSecondaryOut");
+  var volumeSecondaryOutEl = document.getElementById("volumeSecondaryOut");
   var runtimeOutEl = document.getElementById("runtimeOut");
   var capNoteEl = document.getElementById("capNote");
   var tareNoteEl = document.getElementById("tareNote");
@@ -77,17 +84,23 @@
     var remaining = remainingOutEl.textContent || "0.0";
     var percent = percentOutEl.textContent || "0";
     var gallons = gallonsOutEl.textContent || "0.00";
+    var massUnit = massUnitOutEl.textContent || "lb";
+    var volumeUnit = volumeUnitOutEl.textContent || "gal";
     var usage = getUsageLabel(usageLevelEl.value || "medium");
     var runtime = runtimeOutEl.textContent.replace("Estimated runtime: ", "") || "0.0 hours";
 
     return (
       "Propane update: ~" +
       remaining +
-      " lb left (" +
+      " " +
+      massUnit +
+      " left (" +
       percent +
       "% full, ~" +
       gallons +
-      " gal). Runtime estimate: " +
+      " " +
+      volumeUnit +
+      "). Runtime estimate: " +
       runtime +
       " at " +
       usage +
@@ -107,6 +120,7 @@
       tareWeight: tareWeightEl.value,
       currentWeight: currentWeightEl.value,
       usageLevel: usageLevelEl.value,
+      unitSystem: unitSystemEl.value,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
@@ -124,6 +138,7 @@
       tareWeightEl.value = state.tareWeight || "";
       currentWeightEl.value = state.currentWeight || "";
       usageLevelEl.value = state.usageLevel || "medium";
+      unitSystemEl.value = state.unitSystem || "imperial";
     } catch (_err) {
       localStorage.removeItem(STORAGE_KEY);
     }
@@ -235,6 +250,10 @@
       remainingOutEl.textContent = "0.0";
       percentOutEl.textContent = "0";
       gallonsOutEl.textContent = "0.00";
+    massUnitOutEl.textContent = "lb";
+    volumeUnitOutEl.textContent = "gal";
+    remainingSecondaryOutEl.textContent = "0.00 kg";
+    volumeSecondaryOutEl.textContent = "0.00 L";
       updateRuntime(0);
       setNotes(false, false);
       return;
@@ -256,9 +275,29 @@
     var percent = Math.round((remaining / capacity) * 100);
     var gallons = remaining * GALLONS_PER_POUND;
 
-    remainingOutEl.textContent = formatFixed(remaining, 1);
+    var unitSystem = unitSystemEl.value || "imperial";
+    var remainingKg = remaining * KG_PER_POUND;
+    var liters = gallons * L_PER_GALLON;
+
+    if (unitSystem === "metric") {
+      remainingOutEl.textContent = formatFixed(remainingKg, 2);
+      massUnitOutEl.textContent = "kg";
+      remainingSecondaryOutEl.textContent = formatFixed(remaining, 1) + " lb";
+
+      gallonsOutEl.textContent = formatFixed(liters, 2);
+      volumeUnitOutEl.textContent = "L";
+      volumeSecondaryOutEl.textContent = formatFixed(gallons, 2) + " gal";
+    } else {
+      remainingOutEl.textContent = formatFixed(remaining, 1);
+      massUnitOutEl.textContent = "lb";
+      remainingSecondaryOutEl.textContent = formatFixed(remainingKg, 2) + " kg";
+
+      gallonsOutEl.textContent = formatFixed(gallons, 2);
+      volumeUnitOutEl.textContent = "gal";
+      volumeSecondaryOutEl.textContent = formatFixed(liters, 2) + " L";
+    }
+
     percentOutEl.textContent = String(percent);
-    gallonsOutEl.textContent = formatFixed(gallons, 2);
     updateRuntime(gallons);
 
     var showTareNote = current < tare;
@@ -277,6 +316,7 @@
     tareWeightEl.value = "";
     currentWeightEl.value = "";
     usageLevelEl.value = "medium";
+    unitSystemEl.value = "imperial";
     showCustomCapacity();
 
     setFieldError(customCapacityEl, customCapacityErrorEl, "");
@@ -288,6 +328,10 @@
     remainingOutEl.textContent = "0.0";
     percentOutEl.textContent = "0";
     gallonsOutEl.textContent = "0.00";
+    massUnitOutEl.textContent = "lb";
+    volumeUnitOutEl.textContent = "gal";
+    remainingSecondaryOutEl.textContent = "0.00 kg";
+    volumeSecondaryOutEl.textContent = "0.00 L";
     updateRuntime(0);
     setNotes(false, false);
   }
@@ -298,7 +342,7 @@
     calculate("input");
   }
 
-  [tankTypeEl, customCapacityEl, tareWeightEl, currentWeightEl, usageLevelEl].forEach(function (el) {
+  [tankTypeEl, customCapacityEl, tareWeightEl, currentWeightEl, usageLevelEl, unitSystemEl].forEach(function (el) {
     el.addEventListener("input", onInputChanged);
     el.addEventListener("change", onInputChanged);
   });
