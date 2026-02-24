@@ -36,6 +36,10 @@
   var customCapacityErrorEl = document.getElementById("customCapacityError");
   var tareWeightErrorEl = document.getElementById("tareWeightError");
   var currentWeightErrorEl = document.getElementById("currentWeightError");
+  var customCapacityLabelEl = document.getElementById("customCapacityLabel");
+  var lastUnitSystem = "imperial";
+  var tareWeightLabelEl = document.getElementById("tareWeightLabel");
+  var currentWeightLabelEl = document.getElementById("currentWeightLabel");
 
   function parseNum(value) {
     if (value === "" || value == null) {
@@ -44,9 +48,48 @@
     return Number(value);
   }
 
+
+  function toPounds(value, unitSystem) {
+    return unitSystem === "metric" ? value / KG_PER_POUND : value;
+  }
+
+  function fromPounds(value, unitSystem) {
+    return unitSystem === "metric" ? value * KG_PER_POUND : value;
+  }
+
+
+  function convertInputFields(nextUnit) {
+    var prevUnit = lastUnitSystem || "imperial";
+    if (prevUnit === nextUnit) return;
+
+    [customCapacityEl, tareWeightEl, currentWeightEl].forEach(function (el) {
+      var raw = parseNum(el.value);
+      if (!isFinite(raw)) return;
+      var pounds = toPounds(raw, prevUnit);
+      var converted = nextUnit === "metric" ? fromPounds(pounds, "metric") : pounds;
+      el.value = formatFixed(converted, nextUnit === "metric" ? 2 : 1);
+    });
+
+    lastUnitSystem = nextUnit;
+  }
+
+  function updateInputUnits() {
+    var unitSystem = unitSystemEl.value || "imperial";
+    var isMetric = unitSystem === "metric";
+
+    customCapacityLabelEl.textContent = "Tank capacity (" + (isMetric ? "kg" : "lb") + ")";
+    tareWeightLabelEl.textContent = "Tare Weight (TW) (" + (isMetric ? "kg" : "lb") + ")";
+    currentWeightLabelEl.textContent = "Current weight (" + (isMetric ? "kg" : "lb") + ")";
+
+    customCapacityEl.placeholder = isMetric ? "e.g. 9.1" : "e.g. 20";
+    tareWeightEl.placeholder = isMetric ? "e.g. 11.3" : "e.g. 25.0";
+    currentWeightEl.placeholder = isMetric ? "e.g. 16.8" : "e.g. 37.0";
+  }
+
   function getCapacity() {
     if (tankTypeEl.value === "custom") {
-      return parseNum(customCapacityEl.value);
+      var customValue = parseNum(customCapacityEl.value);
+      return toPounds(customValue, unitSystemEl.value || "imperial");
     }
     return Number(tankTypeEl.value);
   }
@@ -139,6 +182,7 @@
       currentWeightEl.value = state.currentWeight || "";
       usageLevelEl.value = state.usageLevel || "medium";
       unitSystemEl.value = state.unitSystem || "imperial";
+      lastUnitSystem = unitSystemEl.value || "imperial";
     } catch (_err) {
       localStorage.removeItem(STORAGE_KEY);
     }
@@ -260,10 +304,13 @@
     }
 
     var capacity = getCapacity();
+    var unitSystem = unitSystemEl.value || "imperial";
     var tare = parseNum(tareWeightEl.value);
     var current = parseNum(currentWeightEl.value);
+    var tareLb = toPounds(tare, unitSystem);
+    var currentLb = toPounds(current, unitSystem);
 
-    var rawRemaining = current - tare;
+    var rawRemaining = currentLb - tareLb;
     var remaining = Math.max(0, rawRemaining);
     var showCapNote = false;
 
@@ -275,7 +322,6 @@
     var percent = Math.round((remaining / capacity) * 100);
     var gallons = remaining * GALLONS_PER_POUND;
 
-    var unitSystem = unitSystemEl.value || "imperial";
     var remainingKg = remaining * KG_PER_POUND;
     var liters = gallons * L_PER_GALLON;
 
@@ -300,7 +346,7 @@
     percentOutEl.textContent = String(percent);
     updateRuntime(gallons);
 
-    var showTareNote = current < tare;
+    var showTareNote = currentLb < tareLb;
     setNotes(showCapNote, showTareNote);
 
     trackEvent("calculation_success", {
@@ -317,7 +363,9 @@
     currentWeightEl.value = "";
     usageLevelEl.value = "medium";
     unitSystemEl.value = "imperial";
+    lastUnitSystem = "imperial";
     showCustomCapacity();
+    updateInputUnits();
 
     setFieldError(customCapacityEl, customCapacityErrorEl, "");
     setFieldError(tareWeightEl, tareWeightErrorEl, "");
@@ -337,7 +385,10 @@
   }
 
   function onInputChanged() {
+    var nextUnit = unitSystemEl.value || "imperial";
+    convertInputFields(nextUnit);
     showCustomCapacity();
+    updateInputUnits();
     saveState();
     calculate("input");
   }
@@ -388,6 +439,8 @@
   }
 
   loadState();
+  lastUnitSystem = unitSystemEl.value || "imperial";
   showCustomCapacity();
+  updateInputUnits();
   calculate("init");
 })();

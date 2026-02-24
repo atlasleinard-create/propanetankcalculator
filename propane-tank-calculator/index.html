@@ -17,15 +17,11 @@
   <body>
     <div class="site-shell">
       <header class="topbar">
-        <a href="/" class="brand-link"><img src="/logo.svg" alt="Simple Project Tools" class="brand-logo" /></a>
-        <nav class="nav-links">
-          <a href="/">Calculator Hub</a>
-        </nav>
+        <a href="/propane-tank-calculator/" class="brand-link"><img src="/logo.svg" alt="Simple Project Tools" class="brand-logo" /></a>
       </header>
     </div>
     <main class="container">
       <section class="card">
-        <p><a href="/">← Back to Calculator Hub</a></p>
         <h1>Propane Tank Calculator</h1>
         <p class="subtitle">Estimate propane remaining, percent full, and gallons left.</p>
         <div class="field">
@@ -58,7 +54,7 @@
           </div>
 
           <div class="field hidden" id="customCapacityWrap">
-            <label for="customCapacity">Tank capacity (lb)</label>
+            <label for="customCapacity" id="customCapacityLabel">Tank capacity (lb)</label>
             <input
               id="customCapacity"
               name="customCapacity"
@@ -74,7 +70,7 @@
           </div>
 
           <div class="field">
-            <label for="tareWeight">Tare Weight (TW) (lb)</label>
+            <label for="tareWeight" id="tareWeightLabel">Tare Weight (TW) (lb)</label>
             <input
               id="tareWeight"
               name="tareWeight"
@@ -90,7 +86,7 @@
           </div>
 
           <div class="field">
-            <label for="currentWeight">Current weight (lb)</label>
+            <label for="currentWeight" id="currentWeightLabel">Current weight (lb)</label>
             <input
               id="currentWeight"
               name="currentWeight"
@@ -201,6 +197,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=20260222-1"></script>
+    <script src="app.js?v=20260223-2"></script>
   </body>
 </html>
