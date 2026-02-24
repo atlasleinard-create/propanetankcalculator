@@ -31,6 +31,15 @@ body {
   background: linear-gradient(180deg, #eef3ff 0%, var(--bg) 38%);
 }
 
+.site-shell {
+  max-width: 860px;
+  padding: 14px 16px 0;
+}
+
+.topbar {
+  margin-bottom: 8px;
+}
+
 .container {
   max-width: 860px;
   margin: 0 auto;
