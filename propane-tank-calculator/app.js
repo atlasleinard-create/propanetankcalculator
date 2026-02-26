@@ -8,6 +8,14 @@
     medium: 0.7,
     high: 1.2,
   };
+  var LIMITS_LB = {
+    tareMin: 1,
+    tareMax: 250,
+    currentMin: 1,
+    currentMax: 500,
+    capacityMin: 1,
+    capacityMax: 1000,
+  };
 
   var tankTypeEl = document.getElementById("tankType");
   var customCapacityWrapEl = document.getElementById("customCapacityWrap");
@@ -29,6 +37,8 @@
   var remainingSecondaryOutEl = document.getElementById("remainingSecondaryOut");
   var volumeSecondaryOutEl = document.getElementById("volumeSecondaryOut");
   var runtimeOutEl = document.getElementById("runtimeOut");
+  var resultTimestampEl = document.getElementById("resultTimestamp");
+  var percentMeterFillEl = document.getElementById("percentMeterFill");
   var capNoteEl = document.getElementById("capNote");
   var tareNoteEl = document.getElementById("tareNote");
 
@@ -38,14 +48,23 @@
   var currentWeightErrorEl = document.getElementById("currentWeightError");
   var customCapacityLabelEl = document.getElementById("customCapacityLabel");
   var lastUnitSystem = "imperial";
+  var hasSubmitted = false;
   var tareWeightLabelEl = document.getElementById("tareWeightLabel");
   var currentWeightLabelEl = document.getElementById("currentWeightLabel");
 
+  function normalizeNumberString(value) {
+    if (value == null) {
+      return "";
+    }
+    return String(value).trim().replace(/,/g, ".");
+  }
+
   function parseNum(value) {
-    if (value === "" || value == null) {
+    var normalized = normalizeNumberString(value);
+    if (normalized === "") {
       return NaN;
     }
-    return Number(value);
+    return Number(normalized);
   }
 
 
@@ -123,6 +142,23 @@
     runtimeOutEl.textContent = "Estimated runtime: " + formatFixed(hours, 1) + " hours at " + getUsageLabel(usageLevel) + " use.";
   }
 
+  function updateResultMeta(percent, didCalculate) {
+    var safePercent = Math.max(0, Math.min(100, Number(percent) || 0));
+    if (percentMeterFillEl) {
+      percentMeterFillEl.style.width = safePercent + "%";
+      percentMeterFillEl.setAttribute("aria-label", "Tank is " + safePercent + "% full");
+    }
+
+    if (!resultTimestampEl) return;
+
+    if (didCalculate) {
+      var now = new Date();
+      resultTimestampEl.textContent = "Last calculated: " + now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    } else {
+      resultTimestampEl.textContent = "Last calculated: —";
+    }
+  }
+
   function getShareText() {
     var remaining = remainingOutEl.textContent || "0.0";
     var percent = percentOutEl.textContent || "0";
@@ -165,16 +201,21 @@
       usageLevel: usageLevelEl.value,
       unitSystem: unitSystemEl.value,
     };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (_err) {
+      // Storage can fail in private mode or restricted environments.
+    }
   }
 
   function loadState() {
-    var raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      return;
-    }
-
     try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) {
+        return;
+      }
+
       var state = JSON.parse(raw);
       tankTypeEl.value = state.tankType || "20";
       customCapacityEl.value = state.customCapacity || "";
@@ -184,7 +225,9 @@
       unitSystemEl.value = state.unitSystem || "imperial";
       lastUnitSystem = unitSystemEl.value || "imperial";
     } catch (_err) {
-      localStorage.removeItem(STORAGE_KEY);
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (_ignore) {}
     }
   }
 
@@ -206,6 +249,13 @@
     formErrorEl.classList.toggle("hidden", !message);
   }
 
+  function getFirstInvalidField(errors) {
+    if (errors.customCapacity) return customCapacityEl;
+    if (errors.tareWeight) return tareWeightEl;
+    if (errors.currentWeight) return currentWeightEl;
+    return null;
+  }
+
   function validateInputs() {
     var errors = {
       customCapacity: "",
@@ -214,39 +264,63 @@
       summary: "",
     };
 
+    var unitSystem = unitSystemEl.value || "imperial";
     var tare = parseNum(tareWeightEl.value);
     var current = parseNum(currentWeightEl.value);
 
     if (tareWeightEl.value.trim() === "") {
-      errors.tareWeight = "Enter tare weight.";
+      errors.tareWeight = "Enter the empty tank weight (TW).";
     } else if (!isFinite(tare)) {
       errors.tareWeight = "Tare weight must be a valid number.";
-    } else if (tare < 0) {
-      errors.tareWeight = "Tare weight cannot be negative.";
+    } else if (tare <= 0) {
+      errors.tareWeight = "Tare weight must be greater than 0.";
+    } else {
+      var tareLb = toPounds(tare, unitSystem);
+      if (tareLb < LIMITS_LB.tareMin || tareLb > LIMITS_LB.tareMax) {
+        errors.tareWeight = "Tare weight looks out of range. Double-check the value.";
+      }
     }
 
     if (currentWeightEl.value.trim() === "") {
-      errors.currentWeight = "Enter current weight.";
+      errors.currentWeight = "Enter the current scale weight.";
     } else if (!isFinite(current)) {
       errors.currentWeight = "Current weight must be a valid number.";
-    } else if (current < 0) {
-      errors.currentWeight = "Current weight cannot be negative.";
+    } else if (current <= 0) {
+      errors.currentWeight = "Current weight must be greater than 0.";
+    } else {
+      var currentLb = toPounds(current, unitSystem);
+      if (currentLb < LIMITS_LB.currentMin || currentLb > LIMITS_LB.currentMax) {
+        errors.currentWeight = "Current weight looks out of range. Double-check the value.";
+      }
     }
 
     if (tankTypeEl.value === "custom") {
       var capacity = parseNum(customCapacityEl.value);
       if (customCapacityEl.value.trim() === "") {
-        errors.customCapacity = "Enter tank capacity for custom tank.";
+        errors.customCapacity = "Enter tank capacity for your custom tank.";
       } else if (!isFinite(capacity)) {
         errors.customCapacity = "Tank capacity must be a valid number.";
       } else if (capacity <= 0) {
         errors.customCapacity = "Tank capacity must be greater than 0.";
+      } else {
+        var capacityLb = toPounds(capacity, unitSystem);
+        if (capacityLb < LIMITS_LB.capacityMin || capacityLb > LIMITS_LB.capacityMax) {
+          errors.customCapacity = "Tank capacity looks out of range. Double-check the value.";
+        }
+      }
+    }
+
+    if (!errors.tareWeight && !errors.currentWeight) {
+      var tareLbCross = toPounds(tare, unitSystem);
+      var currentLbCross = toPounds(current, unitSystem);
+      if (currentLbCross < tareLbCross) {
+        errors.currentWeight = "Current scale weight is lower than TW — please recheck both values.";
       }
     }
 
     var hasError = Boolean(errors.customCapacity || errors.tareWeight || errors.currentWeight);
     if (hasError) {
-      errors.summary = "Please fix the highlighted fields to calculate.";
+      errors.summary = "Please fix the highlighted fields and recalculate.";
     }
 
     return errors;
@@ -274,33 +348,50 @@
 
   function calculate(trigger) {
     if (trigger === "button") {
+      hasSubmitted = true;
       trackEvent("calculation_started", {
         tankType: tankTypeEl.value,
       });
     }
 
+    var shouldShowValidation = hasSubmitted || trigger === "blur";
     var errors = validateInputs();
-    updateValidationUI(errors);
+
+    if (shouldShowValidation) {
+      updateValidationUI(errors);
+    }
 
     if (errors.summary) {
-      trackEvent("validation_error", {
-        trigger: trigger || "unknown",
-        tankType: tankTypeEl.value,
-        hasCustomCapacityError: Boolean(errors.customCapacity),
-        hasTareWeightError: Boolean(errors.tareWeight),
-        hasCurrentWeightError: Boolean(errors.currentWeight),
-      });
+      if (shouldShowValidation) {
+        trackEvent("validation_error", {
+          trigger: trigger || "unknown",
+          tankType: tankTypeEl.value,
+          hasCustomCapacityError: Boolean(errors.customCapacity),
+          hasTareWeightError: Boolean(errors.tareWeight),
+          hasCurrentWeightError: Boolean(errors.currentWeight),
+        });
+
+        if (trigger === "button") {
+          formErrorEl.focus();
+          formErrorEl.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }
 
       remainingOutEl.textContent = "0.0";
       percentOutEl.textContent = "0";
       gallonsOutEl.textContent = "0.00";
-    massUnitOutEl.textContent = "lb";
-    volumeUnitOutEl.textContent = "gal";
-    remainingSecondaryOutEl.textContent = "0.00 kg";
-    volumeSecondaryOutEl.textContent = "0.00 L";
+      massUnitOutEl.textContent = "lb";
+      volumeUnitOutEl.textContent = "gal";
+      remainingSecondaryOutEl.textContent = "0.00 kg";
+      volumeSecondaryOutEl.textContent = "0.00 L";
       updateRuntime(0);
+      updateResultMeta(0, false);
       setNotes(false, false);
       return;
+    }
+
+    if (shouldShowValidation) {
+      updateValidationUI({ customCapacity: "", tareWeight: "", currentWeight: "", summary: "" });
     }
 
     var capacity = getCapacity();
@@ -345,6 +436,7 @@
 
     percentOutEl.textContent = String(percent);
     updateRuntime(gallons);
+    updateResultMeta(percent, true);
 
     var showTareNote = currentLb < tareLb;
     setNotes(showCapNote, showTareNote);
@@ -364,6 +456,7 @@
     usageLevelEl.value = "medium";
     unitSystemEl.value = "imperial";
     lastUnitSystem = "imperial";
+    hasSubmitted = false;
     showCustomCapacity();
     updateInputUnits();
 
@@ -381,6 +474,7 @@
     remainingSecondaryOutEl.textContent = "0.00 kg";
     volumeSecondaryOutEl.textContent = "0.00 L";
     updateRuntime(0);
+    updateResultMeta(0, false);
     setNotes(false, false);
   }
 
@@ -390,12 +484,21 @@
     showCustomCapacity();
     updateInputUnits();
     saveState();
-    calculate("input");
+
+    if (hasSubmitted) {
+      calculate("input");
+    }
   }
 
   [tankTypeEl, customCapacityEl, tareWeightEl, currentWeightEl, usageLevelEl, unitSystemEl].forEach(function (el) {
     el.addEventListener("input", onInputChanged);
     el.addEventListener("change", onInputChanged);
+  });
+
+  [customCapacityEl, tareWeightEl, currentWeightEl].forEach(function (el) {
+    el.addEventListener("blur", function () {
+      calculate("blur");
+    });
   });
 
   Array.prototype.slice.call(document.querySelectorAll(".preset-btn")).forEach(function (btn) {
@@ -413,6 +516,13 @@
 
   calculateBtnEl.addEventListener("click", function () {
     calculate("button");
+  });
+
+  formErrorEl.addEventListener("click", function () {
+    var firstInvalid = getFirstInvalidField(validateInputs());
+    if (firstInvalid) {
+      firstInvalid.focus();
+    }
   });
 
   resetBtnEl.addEventListener("click", function () {

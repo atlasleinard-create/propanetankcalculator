@@ -23,7 +23,12 @@
     <main class="container">
       <section class="card">
         <h1>Propane Tank Calculator</h1>
-        <p class="subtitle">Estimate propane remaining, percent full, and gallons left.</p>
+        <p class="subtitle">Enter your tank’s tare weight and current scale weight to estimate propane remaining in seconds.</p>
+        <ul class="trust-bullets" aria-label="Trust highlights">
+          <li>Free to use — no signup required</li>
+          <li>Works on phone, tablet, and desktop</li>
+          <li>Clear estimates in lb/gal or kg/L</li>
+        </ul>
         <div class="field">
           <label for="unitSystem">Units</label>
           <select id="unitSystem" name="unitSystem">
@@ -102,17 +107,21 @@
           </div>
 
           <p class="example">Example: TW 25.0, scale 37.0 -> ~12.0 lb remaining.</p>
-          <p id="formError" class="error summary hidden" role="status" aria-live="polite"></p>
+          <p id="formError" class="error summary hidden" role="alert" aria-live="assertive" aria-atomic="true" tabindex="-1"></p>
 
           <div class="actions">
-            <button type="button" id="calculateBtn">Calculate</button>
-            <button type="button" id="resetBtn" class="secondary">Reset</button>
+            <button type="button" id="calculateBtn">Calculate propane left</button>
+            <button type="button" id="resetBtn" class="secondary">Reset inputs</button>
           </div>
         </form>
       </section>
 
       <section class="card" aria-live="polite">
         <h2>Results</h2>
+        <p id="resultTimestamp" class="hint result-timestamp">Last calculated: —</p>
+        <div class="result-meter" aria-label="Tank fullness">
+          <div id="percentMeterFill" class="result-meter-fill" style="width: 0%"></div>
+        </div>
         <div class="result-grid">
           <div>
             <p class="result-label">Propane remaining</p>
@@ -138,12 +147,12 @@
           </select>
           <p id="runtimeHint" class="hint">Runtime is an estimate. Real usage varies by appliance, weather, and settings.</p>
           <p class="note" id="runtimeOut">Estimated runtime: 0.0 hours at Medium use.</p>
-          <button type="button" id="shareResultBtn" class="secondary share-btn">Copy share text</button>
+          <button type="button" id="shareResultBtn" class="secondary share-btn">Copy result summary</button>
           <p id="shareStatus" class="hint hidden" role="status" aria-live="polite"></p>
         </div>
 
-        <p id="capNote" class="note hidden">Capped to capacity - check TW/scale.</p>
-        <p id="tareNote" class="note warning hidden">Scale weight cannot be less than tare weight - double-check your numbers.</p>
+        <p id="capNote" class="note hidden">Result capped at tank capacity. Verify tank size and weights.</p>
+        <p id="tareNote" class="note warning hidden">Current scale weight is lower than TW — please recheck both values.</p>
       </section>
 
       <section class="card small">
@@ -155,21 +164,29 @@
       <section class="card small">
         <h2>FAQ</h2>
 
-        <h3>Where do I find tare weight (TW)?</h3>
-        <p>Look on the tank collar/handle ring. TW is the empty tank weight stamped on the metal, often around 16-30 lb depending on tank type.</p>
+        <details class="faq-item">
+          <summary>Where do I find tare weight (TW)?</summary>
+          <p>Look on the tank collar/handle ring. TW is the empty tank weight stamped on the metal, often around 16-30 lb depending on tank type.</p>
+        </details>
 
-        <h3>What if my current weight is lower than tare weight?</h3>
-        <p>That usually means one of the numbers was entered incorrectly. Recheck your scale reading and the stamped TW value.</p>
+        <details class="faq-item">
+          <summary>What if my current weight is lower than tare weight?</summary>
+          <p>That usually means one of the numbers was entered incorrectly. Recheck your scale reading and the stamped TW value.</p>
+        </details>
 
-        <h3>Why is my "20 lb" tank not showing 20 lb when full?</h3>
-        <p>Many exchange tanks are underfilled for safety and operations. It is common for usable propane to be below the labeled capacity.</p>
+        <details class="faq-item">
+          <summary>Why is my "20 lb" tank not showing 20 lb when full?</summary>
+          <p>Many exchange tanks are underfilled for safety and operations. It is common for usable propane to be below the labeled capacity.</p>
+        </details>
 
-        <h3>How accurate is this calculator?</h3>
-        <p>It is a practical estimate based on your scale reading and TW. Accuracy depends on correct inputs and scale precision.</p>
+        <details class="faq-item">
+          <summary>How accurate is this calculator?</summary>
+          <p>It is a practical estimate based on your scale reading and TW. Accuracy depends on correct inputs and scale precision.</p>
+        </details>
       </section>
 
-      <section class="card small">
-        <h2>Recommended gear</h2>
+      <section class="card small affiliate-card">
+        <h2>Recommended gear (optional)</h2>
         <div class="product-card">
           <img
             class="product-image"
@@ -189,7 +206,7 @@
               href="https://amzn.to/4qFIv7D"
               target="_blank"
               rel="noopener noreferrer sponsored"
-              >View on Amazon</a
+              >Get a scale to check tank weight</a
             >
           </div>
         </div>
